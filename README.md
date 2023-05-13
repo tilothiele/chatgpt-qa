@@ -115,6 +115,8 @@ npm run dev
 
 Thanks to [Mckay Wrigley](https://github.com/mckaywrigley) for his work.
 
+Favicon from [favicon.cc](https://www.favicon.cc/?action=icon&file_id=152523)
+
 ## Contact
 
 mailto:tilo.thiele@hamburg.de
