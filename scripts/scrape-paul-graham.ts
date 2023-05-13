@@ -42,7 +42,8 @@ const getEssay = async (linkObj: { url: string; title: string }) => {
   let essay: PGEssay = {
     title: "",
     url: "",
-    date: "",
+    image: "",
+    date: new Date(),
     thanks: "",
     content: "",
     length: 0,
@@ -94,7 +95,8 @@ const getEssay = async (linkObj: { url: string; title: string }) => {
       essay = {
         title,
         url: fullLink,
-        date: dateStr,
+        image: "",
+        date: new Date(dateStr), // wird wohl nicht mehr funktionieren
         thanks: thanksTo.trim(),
         content: trimmedContent,
         length: trimmedContent.length,
@@ -108,7 +110,7 @@ const getEssay = async (linkObj: { url: string; title: string }) => {
 };
 
 const chunkEssay = async (essay: PGEssay) => {
-  const { title, url, date, thanks, content, ...chunklessSection } = essay;
+  const { title, url, image, date, thanks, content, ...chunklessSection } = essay;
 
   let essayTextChunks = [];
 
@@ -144,6 +146,7 @@ const chunkEssay = async (essay: PGEssay) => {
     const chunk: PGChunk = {
       essay_title: title,
       essay_url: url,
+      essay_image: image,
       essay_date: date,
       essay_thanks: thanks,
       content: trimmedText,
