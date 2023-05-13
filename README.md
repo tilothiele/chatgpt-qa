@@ -1,20 +1,17 @@
-# Paul Graham GPT
+# Unterwegs mit Buddha GPT
 
-AI-powered search and chat for [Paul Graham's](https://twitter.com/paulg) [essays](http://www.paulgraham.com/articles.html).
+AI-powered search and chat for [Unterwegs mit Budda](https://unterwegsmitbuddha.de).
+
+This is a clone/fork/modification of https://github.com/mckaywrigley/paul-graham-gpt.git
+
+See https://www.youtube.com/watch?v=RM-v7zoYQo0&list=PLNSGPqkpvHVMHzRlqWB6a6Pdj18UY5-Gg
 
 All code & data used is 100% open-source.
 
-## Dataset
-
-The dataset is a CSV file containing all text & embeddings used.
-
-Download it [here](https://drive.google.com/file/d/1BxcPw2mn0VYFucc62wlt9H0nQiOu38ki/view?usp=sharing).
-
-I recommend getting familiar with fetching, cleaning, and storing data as outlined in the scraping and embedding scripts below, but feel free to skip those steps and just use the dataset.
 
 ## How It Works
 
-Paul Graham GPT provides 2 things:
+Unterwegs mit Buddha GPT provides 2 things:
 
 1. A search interface.
 2. A chat interface.
@@ -64,7 +61,7 @@ I recommend turning on Row Level Security and setting up a service role to use w
 3. Clone repo
 
 ```bash
-git clone https://github.com/mckaywrigley/paul-graham-gpt.git
+git clone https://github.com/tilothiele/chatgpt-qa.git
 ```
 
 4. Install dependencies
@@ -116,20 +113,9 @@ npm run dev
 
 ## Credits
 
-Thanks to [Paul Graham](https://twitter.com/paulg) for his writing.
-
-I highly recommend you read his essays.
-
-3 years ago they convinced me to learn to code, and it changed my life.
+Thanks to [Mckay Wrigley](https://github.com/mckaywrigley) for his work.
 
 ## Contact
 
-If you have any questions, feel free to reach out to me on [Twitter](https://twitter.com/mckaywrigley)!
+mailto:tilo.thiele@hamburg.de
 
-## Notes
-
-I sacrificed composability for simplicity in the app.
-
-Yes, you can make things more modular and reusable.
-
-But I kept pretty much everything in the homepage component for the sake of simplicity.
