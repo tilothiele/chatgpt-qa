@@ -6,7 +6,8 @@ create table pg (
   id bigserial primary key,
   essay_title text,
   essay_url text,
-  essay_date text,
+  essay_image text,
+  essay_date date,
   essay_thanks text,
   content text,
   content_length bigint,
@@ -24,7 +25,8 @@ returns table (
   id bigint,
   essay_title text,
   essay_url text,
-  essay_date text,
+  essay_image text,
+  essay_date date,
   essay_thanks text,
   content text,
   content_length bigint,
@@ -39,6 +41,7 @@ begin
     pg.id,
     pg.essay_title,
     pg.essay_url,
+    pg.essay_image,
     pg.essay_date,
     pg.essay_thanks,
     pg.content,
@@ -53,6 +56,6 @@ end;
 $$;
 
 -- RUN 4th
-create index on pg 
+create index on pg
 using ivfflat (embedding vector_cosine_ops)
 with (lists = 100);

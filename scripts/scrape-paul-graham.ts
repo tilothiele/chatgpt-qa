@@ -4,42 +4,45 @@ import * as cheerio from "cheerio";
 import fs from "fs";
 import { encode } from "gpt-3-encoder";
 
-const BASE_URL = "https://unterwegsmitbuddha.de/";
+const BASE_URL = "http://www.paulgraham.com/";
 const CHUNK_SIZE = 200;
 
 const getLinks = async () => {
-  const xml = await axios.get(`${BASE_URL}post-sitemap.xml`);
-  const $ = cheerio.load(xml.data);
-  const urls = $("url");
+  const html = await axios.get(`${BASE_URL}articles.html`);
+  const $ = cheerio.load(html.data);
+  const tables = $("table");
 
-  const linksArr: { url: string; image: string, lastmod: Date }[] = [];
+  const linksArr: { url: string; title: string }[] = [];
 
-  urls.each((i, url) => {
-    if(i > 0 ) {
-      const loc = $(url).find("loc");
-      const image = $(url).find("image\\:loc");
-      const lastmod = $(url).find("lastmod");
-      const linkObj = {
-        url: $(loc).text(),
-        image: $(image).text(),
-        lastmod: new Date($(lastmod).text())
-      };
+  tables.each((i, table) => {
+    if (i === 2) {
+      const links = $(table).find("a");
+      links.each((i, link) => {
+        const url = $(link).attr("href");
+        const title = $(link).text();
 
-      linksArr.push(linkObj);
+        if (url && url.endsWith(".html")) {
+          const linkObj = {
+            url,
+            title
+          };
+
+          linksArr.push(linkObj);
+        }
+      });
     }
   });
 
   return linksArr;
 };
 
-const getPost = async (linkObj: { url: string; image: string, lastmod: Date }) => {
-  const { image, lastmod, url } = linkObj;
+const getEssay = async (linkObj: { url: string; title: string }) => {
+  const { title, url } = linkObj;
 
   let essay: PGEssay = {
     title: "",
     url: "",
-    image: "",
-    date: new Date,
+    date: "",
     thanks: "",
     content: "",
     length: 0,
@@ -47,36 +50,65 @@ const getPost = async (linkObj: { url: string; image: string, lastmod: Date }) =
     chunks: []
   };
 
-  const fullLink = url;
+  const fullLink = BASE_URL + url;
   const html = await axios.get(fullLink);
   const $ = cheerio.load(html.data);
-  const article = $("article");
-  const header = $(article).find("header");
-  const title = $(header).find("h1").text();
-  const essayText = $(article).find("div.entry-content").text();
+  const tables = $("table");
 
-  let cleanedText = essayText.replace(/\s+/g, " ");
-  cleanedText = cleanedText.replace(/\.([a-zA-Z])/g, ". $1");
+  tables.each((i, table) => {
+    if (i === 1) {
+      const text = $(table).text();
 
-  const trimmedContent = cleanedText.trim();
+      let cleanedText = text.replace(/\s+/g, " ");
+      cleanedText = cleanedText.replace(/\.([a-zA-Z])/g, ". $1");
 
-  essay = {
-    title,
-    image,
-    url: fullLink,
-    date: lastmod,
-    thanks: "",
-    content: trimmedContent,
-    length: trimmedContent.length,
-    tokens: encode(trimmedContent).length,
-    chunks: []
-  };
+      const date = cleanedText.match(/([A-Z][a-z]+ [0-9]{4})/);
+      let dateStr = "";
+      let textWithoutDate = "";
+
+      if (date) {
+        dateStr = date[0];
+        textWithoutDate = cleanedText.replace(date[0], "");
+      }
+
+      let essayText = textWithoutDate.replace(/\n/g, " ");
+      let thanksTo = "";
+
+      const split = essayText.split(". ").filter((s) => s);
+      const lastSentence = split[split.length - 1];
+
+      if (lastSentence && lastSentence.includes("Thanks to")) {
+        const thanksToSplit = lastSentence.split("Thanks to");
+
+        if (thanksToSplit[1].trim()[thanksToSplit[1].trim().length - 1] === ".") {
+          thanksTo = "Thanks to " + thanksToSplit[1].trim();
+        } else {
+          thanksTo = "Thanks to " + thanksToSplit[1].trim() + ".";
+        }
+
+        essayText = essayText.replace(thanksTo, "");
+      }
+
+      const trimmedContent = essayText.trim();
+
+      essay = {
+        title,
+        url: fullLink,
+        date: dateStr,
+        thanks: thanksTo.trim(),
+        content: trimmedContent,
+        length: trimmedContent.length,
+        tokens: encode(trimmedContent).length,
+        chunks: []
+      };
+    }
+  });
 
   return essay;
 };
 
 const chunkEssay = async (essay: PGEssay) => {
-  const { title, url, image, date, thanks, content, ...chunklessSection } = essay;
+  const { title, url, date, thanks, content, ...chunklessSection } = essay;
 
   let essayTextChunks = [];
 
@@ -112,7 +144,6 @@ const chunkEssay = async (essay: PGEssay) => {
     const chunk: PGChunk = {
       essay_title: title,
       essay_url: url,
-      essay_image: image,
       essay_date: date,
       essay_thanks: thanks,
       content: trimmedText,
@@ -150,22 +181,18 @@ const chunkEssay = async (essay: PGEssay) => {
 (async () => {
   const links = await getLinks();
 
-  console.log('Verarbeite '+links.length+' Posts');
-
   let essays = [];
 
-  for(let i=0; i<links.length; i++) {
-    console.log('Verarbeite Post '+(i+1)+'/'+links.length);
-    const essay = await getPost(links[i]);
+  for (let i = 0; i < links.length; i++) {
+    const essay = await getEssay(links[i]);
     const chunkedEssay = await chunkEssay(essay);
-    //console.log(chunkedEssay);
     essays.push(chunkedEssay);
   }
 
   const json: PGJSON = {
     current_date: "2023-03-01",
-    author: "Christiane Michelberger",
-    url: "https://unterwegsmitbuddha.de/",
+    author: "Paul Graham",
+    url: "http://www.paulgraham.com/articles.html",
     length: essays.reduce((acc, essay) => acc + essay.length, 0),
     tokens: essays.reduce((acc, essay) => acc + essay.tokens, 0),
     essays

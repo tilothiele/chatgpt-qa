@@ -7,7 +7,7 @@ export const Footer: FC = () => {
       <div className="hidden sm:flex"></div>
 
       <div className="hidden sm:flex italic text-sm">
-        Created by
+        Erstellt von
         <a
           className="hover:opacity-50 mx-1"
           href="https://twitter.com/tilott"
@@ -16,7 +16,7 @@ export const Footer: FC = () => {
         >
           Tilo Thiele
         </a>
-        based on the posts of
+        basierend auf den Posts von
         <a
           className="hover:opacity-50 ml-1"
           href="https://www.unterwegsmitbuddha.de/"

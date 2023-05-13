@@ -7,6 +7,11 @@ import endent from "endent";
 import Head from "next/head";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 
+const formatDate = (date: Date) => {
+  console.log(date);
+  return ""+date;
+}
+
 export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -22,12 +27,12 @@ export default function Home() {
 
   const handleSearch = async () => {
     if (!apiKey) {
-      alert("Please enter an API key.");
+      alert("Gib einen API key ein.");
       return;
     }
 
     if (!query) {
-      alert("Please enter a query.");
+      alert("Gib eine Anfrage ein.");
       return;
     }
 
@@ -62,12 +67,12 @@ export default function Home() {
 
   const handleAnswer = async () => {
     if (!apiKey) {
-      alert("Please enter an API key.");
+      alert("Gib einen API key ein.");
       return;
     }
 
     if (!query) {
-      alert("Please enter a query.");
+      alert("Gib eine Anfrage ein.");
       return;
     }
 
@@ -146,7 +151,7 @@ export default function Home() {
 
   const handleSave = () => {
     if (apiKey.length !== 51) {
-      alert("Please enter a valid API key.");
+      alert("Gib einen gültigen API key ein.");
       return;
     }
 
@@ -202,7 +207,7 @@ export default function Home() {
         <title>Unterwegs mit Buddha - GPT</title>
         <meta
           name="description"
-          content={`AI-powered search and chat for 'Unterwegs mit Buddha' on the subject of spiritual awakening.`}
+          content={`AI-unterstützte Suche und Chat von 'Unterwegs mit Buddha' über das Spirituelle Erwachen.`}
         />
         <meta
           name="viewport"
@@ -222,7 +227,7 @@ export default function Home() {
               className="mt-4 flex cursor-pointer items-center space-x-2 rounded-full border border-zinc-600 px-3 py-1 text-sm hover:opacity-50"
               onClick={() => setShowSettings(!showSettings)}
             >
-              {showSettings ? "Hide" : "Show"} Settings
+              {showSettings ? "Einstellungen ausblenden" : "Zeige Einstellungen"}
             </button>
 
             {showSettings && (
@@ -240,7 +245,7 @@ export default function Home() {
                 </div>
 
                 <div className="mt-2">
-                  <div>Passage Count</div>
+                  <div>Anzahl gefundener Passagen</div>
                   <input
                     type="number"
                     min={1}
@@ -273,14 +278,14 @@ export default function Home() {
                     className="flex cursor-pointer items-center space-x-2 rounded-full bg-green-500 px-3 py-1 text-sm text-white hover:bg-green-600"
                     onClick={handleSave}
                   >
-                    Save
+                    Speichern
                   </div>
 
                   <div
                     className="flex cursor-pointer items-center space-x-2 rounded-full bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
                     onClick={handleClear}
                   >
-                    Clear
+                    Löschen
                   </div>
                 </div>
               </div>
@@ -294,7 +299,7 @@ export default function Home() {
                   ref={inputRef}
                   className="h-12 w-full rounded-full border border-zinc-600 pr-12 pl-11 focus:border-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-800 sm:h-16 sm:py-2 sm:pr-16 sm:pl-16 sm:text-lg"
                   type="text"
-                  placeholder="How do I find spiritual awakening?"
+                  placeholder="Wie gelange ich zu einem spirituellen Erwachen?"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
@@ -309,14 +314,14 @@ export default function Home() {
               </div>
             ) : (
               <div className="text-center font-bold text-3xl mt-7">
-                Please enter your
+                Trage deinen
                 <a
                   className="mx-2 underline hover:opacity-50"
                   href="https://platform.openai.com/account/api-keys"
                 >
                   OpenAI API key
                 </a>
-                in settings.
+                in den Einstellungen ein.
               </div>
             )}
 
@@ -346,11 +351,11 @@ export default function Home() {
               </div>
             ) : answer ? (
               <div className="mt-6">
-                <div className="font-bold text-2xl mb-2">Answer</div>
+                <div className="font-bold text-2xl mb-2">Antwort</div>
                 <Answer text={answer} />
 
                 <div className="mt-6 mb-16">
-                  <div className="font-bold text-2xl">Passages</div>
+                  <div className="font-bold text-2xl">Passagen</div>
 
                   {chunks.map((chunk, index) => (
                     <div key={index}>
@@ -358,7 +363,7 @@ export default function Home() {
                         <div className="flex justify-between">
                           <div>
                             <div className="font-bold text-xl">{chunk.essay_title}</div>
-                            <div className="mt-1 font-bold text-sm">{chunk.essay_date}</div>
+                            <div className="mt-1 font-bold text-sm">{formatDate(chunk.essay_date)}</div>
                           </div>
                           <a
                             className="hover:opacity-50 ml-2"
@@ -377,14 +382,14 @@ export default function Home() {
               </div>
             ) : chunks.length > 0 ? (
               <div className="mt-6 pb-16">
-                <div className="font-bold text-2xl">Passages</div>
+                <div className="font-bold text-2xl">Passagen</div>
                 {chunks.map((chunk, index) => (
                   <div key={index}>
                     <div className="mt-4 border border-zinc-600 rounded-lg p-4">
                       <div className="flex justify-between">
                         <div>
                           <div className="font-bold text-xl">{chunk.essay_title}</div>
-                          <div className="mt-1 font-bold text-sm">{chunk.essay_date}</div>
+                          <div className="mt-1 font-bold text-sm">{formatDate(chunk.essay_date)}</div>
                         </div>
                         <a
                           className="hover:opacity-50 ml-2"
@@ -401,7 +406,7 @@ export default function Home() {
                 ))}
               </div>
             ) : (
-              <div className="mt-6 text-center text-lg">{`AI-powered search & chat for finding spiritual awakening.`}</div>
+              <div className="mt-6 text-center text-lg">{`KI-unterstützte Suche und Chat über das Spirituelle Erwachen.`}</div>
             )}
           </div>
         </div>
