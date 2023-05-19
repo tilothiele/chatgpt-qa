@@ -25,7 +25,8 @@ export const Navbar: FC = () => {
             className="ml-1"
             size={20}
           />
-        </a>&nbst;<a
+        </a>
+        <a
           className="flex items-center hover:opacity-50"
           href="https://steffimania.de.de/"
           target="_blank"
