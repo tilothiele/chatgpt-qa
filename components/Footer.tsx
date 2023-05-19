@@ -18,7 +18,7 @@ export const Footer: FC = () => {
         </a>
         basierend auf den Posts von
         <a
-          className="hover:opacity-50 ml-1"
+          className="hover:opacity-50 ml-1 mr-1"
           href="https://www.unterwegsmitbuddha.de/"
           target="_blank"
           rel="noreferrer"
