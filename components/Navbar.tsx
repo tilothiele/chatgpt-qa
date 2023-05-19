@@ -13,13 +13,25 @@ export const Navbar: FC = () => {
         </a>
       </div>
       <div>
-        <a
+      <a
           className="flex items-center hover:opacity-50"
           href="https://www.unterwegsmitbuddha.de/"
           target="_blank"
           rel="noreferrer"
         >
           <div className="hidden sm:flex">unterwegsmitbuddha.de</div>
+
+          <IconExternalLink
+            className="ml-1"
+            size={20}
+          />
+        </a>&nbst;<a
+          className="flex items-center hover:opacity-50"
+          href="https://steffimania.de.de/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <div className="hidden sm:flex">steffimania.de</div>
 
           <IconExternalLink
             className="ml-1"
