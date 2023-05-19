@@ -4,11 +4,13 @@ import * as cheerio from "cheerio";
 import fs from "fs";
 import { encode } from "gpt-3-encoder";
 
-const BASE_URL = "https://unterwegsmitbuddha.de/";
+//const BASE_URL = "https://unterwegsmitbuddha.de/";
+// https://steffimania.de/post-sitemap.xml
+
 const CHUNK_SIZE = 200;
 
-const getLinks = async () => {
-  const xml = await axios.get(`${BASE_URL}post-sitemap.xml`);
+const getLinks = async (baseUrl: string) => {
+  const xml = await axios.get(`${baseUrl}post-sitemap.xml`);
   const $ = cheerio.load(xml.data);
   const urls = $("url");
 
@@ -147,8 +149,8 @@ const chunkEssay = async (essay: PGEssay) => {
   return chunkedSection;
 };
 
-(async () => {
-  const links = await getLinks();
+const scrapeWebsite = async (baseUrl: string, author: string) => {
+  const links = await getLinks(baseUrl);
 
   console.log('Verarbeite '+links.length+' Posts');
 
@@ -164,12 +166,17 @@ const chunkEssay = async (essay: PGEssay) => {
 
   const json: PGJSON = {
     current_date: "2023-03-01",
-    author: "Christiane Michelberger",
-    url: "https://unterwegsmitbuddha.de/",
+    author,
+    url: baseUrl,
     length: essays.reduce((acc, essay) => acc + essay.length, 0),
     tokens: essays.reduce((acc, essay) => acc + essay.tokens, 0),
     essays
   };
 
   fs.writeFileSync("scripts/pg.json", JSON.stringify(json));
+}
+
+(async () => {
+//  await scrapeWebsite("https://unterwegsmitbuddha.de/", "Christiane Michelberger");
+  await scrapeWebsite("https://steffimania.de/", "Stephanie Mitkowsky");
 })();

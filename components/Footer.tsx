@@ -25,6 +25,15 @@ export const Footer: FC = () => {
         >
           Unterwegs mit Buddha
         </a>
+        und
+        <a
+          className="hover:opacity-50 ml-1"
+          href="https://steffimania.de/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Steffimania
+        </a>
         .
       </div>
 

@@ -5,6 +5,7 @@ import { PGChunk } from "@/types";
 import { IconArrowRight, IconExternalLink, IconSearch } from "@tabler/icons-react";
 import endent from "endent";
 import Head from "next/head";
+import Image from 'next/image';
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 
 const formatDate = (date: Date) => {
@@ -359,6 +360,9 @@ export default function Home() {
 
                   {chunks.map((chunk, index) => (
                     <div key={index}>
+                      <div className="relative w-full h-200 mt-4">
+                        <Image src={chunk.essay_image} alt={chunk.essay_title} fill={true}/>
+                      </div>
                       <div className="mt-4 border border-zinc-600 rounded-lg p-4">
                         <div className="flex justify-between">
                           <div>
@@ -385,6 +389,9 @@ export default function Home() {
                 <div className="font-bold text-2xl">Passagen</div>
                 {chunks.map((chunk, index) => (
                   <div key={index}>
+                      <div className="relative w-200 h-100 mt-4">
+                        <Image src={chunk.essay_image} alt={chunk.essay_title} fill={true}/>
+                      </div>
                     <div className="mt-4 border border-zinc-600 rounded-lg p-4">
                       <div className="flex justify-between">
                         <div>
